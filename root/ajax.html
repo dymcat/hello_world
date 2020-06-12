@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>局部刷新</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,height=device-height,user-scalable=yes,initial-scale=1,minimum-scale=1,maximum-scale=10"/>
+<meta name="x5-page-mode" content="app"/>
+<meta name="browsermode" content="application"/>
+<meta name="renderer" content="webkit"/>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+<meta http-equiv="Cache-Control" content="no-siteapp"/>
+<meta http-equiv="Cache-Control" content="no-transform"/>
+<style>
+	body{font-family:等线,宋体,Arial,Tahoma,Verdana;}
+	table{width:100%;border-collapse:collapse;text-align:center;}
+	tr:nth-child(odd){background-color:LightCyan;}
+	tr:nth-child(even){background-color:Azure;}
+	th,td{padding:1%;}
+</style>
+</head>
+<body>
+	<table id="data-list">
+		<caption><h3>用户列表</h3></caption>
+		<tr>
+			<th>姓名</th>
+			<th>性别</th>
+			<th>年龄</th>
+			<th>生日</th>
+			<th>民族</th>
+			<th>加入时间</th>
+		</tr>
+		{init-data}
+	</table>
+</body>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script>window.jQuery||document.write("<script src='资源库/@/jquery/jquery-1.12.4.min.js'><\/script>")</script>
+<script id="template" type="text/template">
+	<tr>
+		<td>{name}</td>
+		<td>{sex}</td>
+		<td>{age}</td>
+		<td>{birth}</td>
+		<td>{nation}</td>
+		<td>{createTime}</td>
+	</tr>
+</script>
+<script>
+	var rest=true;
+	$(window).scroll(function(event){
+		if(rest&&$(document).height()-($(window).height()+$(this).scrollTop())<100){
+			rest=false;
+			$.get("ajax.json",{},function(list){
+				var template=$("#template").html();
+				var html="";
+				for(var i=0;i<list.length;i++){
+					html+=template
+					.replace("{name}",list[i].name)
+					.replace("{sex}",list[i].sex)
+					.replace("{age}",list[i].age)
+					.replace("{birth}",list[i].birth)
+					.replace("{nation}",list[i].nation)
+					.replace("{createTime}",list[i].createTime);
+				}
+				$("#data-list").append(html);
+				rest=true;
+			});
+		}
+	});
+</script>
+</html>

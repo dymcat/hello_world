@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta charset="UTF-8"/>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+<!--
+<script type="text/babel"></script>
+<script type="text/jsx"></script>
+<script type="text/babel" data-presets="es2015"></script>
+<script type="text/babel" data-presets="es2015,stage-0"></script>
+<script type="text/babel" data-presets="es2017,react,stage-3"></script>
+<script type="text/babel" src="foo.js"></script>
+-->
+<div id="babel-simple"></div>
+<script type="text/babel">
+const getMessage = () => "<h1>babel-simple</h1>";
+document.getElementById("babel-simple").innerHTML=getMessage();
+</script>
+<!--
+<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+-->
+<script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+
+<div id="babel-react-simple"></div>
+<script type="text/babel">
+	ReactDOM.render(
+		<h1>Hello world !</h1>
+		,document.getElementById("babel-react-simple")
+	);
+</script>
+
+<div id="babel-react-complex"></div>
+<script type="text/babel">
+	setInterval(function(){
+		ReactDOM.render(
+			(
+				<div>
+					<h1>babel-react-complex</h1>
+					<h2>{new Date().toLocaleTimeString()}</h2>
+				</div>
+			)
+			,document.getElementById("babel-react-complex")
+		);
+	},1000);
+</script>
+
+<div id="babel-react-function"></div>
+<script type="text/babel">
+	function ClockFunc(props){
+		return (
+			<div>
+				<h1>babel-react-function</h1>
+				<h2>{props.date.toLocaleTimeString()}</h2>
+			</div>
+		);
+	}
+	setInterval(function(){
+		ReactDOM.render(
+			<ClockFunc date={new Date()}/>
+			,document.getElementById("babel-react-function")
+		);
+	},1000);
+</script>
+
+<div id="babel-react-class"></div>
+<script type="text/babel">
+	class ClockClass extends React.Component{
+		render(){
+			return (
+				<div>
+					<h1>babel-react-class</h1>
+					<h2>{this.props.date.toLocaleTimeString()}</h2>
+				</div>
+			);
+		}
+	}
+	setInterval(function(){
+		ReactDOM.render(
+			<ClockClass date={new Date()}/>
+			,document.getElementById("babel-react-class")
+		);
+	},1000);
+</script>
+
+</body>
+</html>

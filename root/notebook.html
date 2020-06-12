@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NoteBook</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,height=device-height,user-scalable=yes,initial-scale=1,minimum-scale=1,maximum-scale=10"/>
+<meta name="x5-page-mode" content="app"/>
+<meta name="browsermode" content="application"/>
+<meta name="renderer" content="webkit"/>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+<meta http-equiv="Cache-Control" content="no-siteapp"/>
+<meta http-equiv="Cache-Control" content="no-transform"/>
+<style>
+	*{margin:0;padding:0;}
+	html,body{width:100%;height:100%;}
+	#notebook-html{width:100%;}
+	#notebook-html .notebook-in{resize:vertical;width:100%;font-size:larger;}
+	#notebook-html .notebook-out{font-weight:bold;}
+	#notebook-html .notebook-out .notebook-out-ok{color:black;}
+	#notebook-html .notebook-out .notebook-out-err{color:red;}
+</style>
+</head>
+<body>
+<select id="notebook-type">
+	<option value="notebook-type-in-before">在之前插入输入框</option>
+	<option value="notebook-type-in-after">在之后插入输入框</option>
+	<option value="notebook-type-out-before">在之前插入输出框</option>
+	<option value="notebook-type-out-after">在之后插入输出框</option>
+	<option value="notebook-type-note-before">在之前插入描述</option>
+	<option value="notebook-type-note-after">在之后插入描述</option>
+	<option value="notebook-type-drop-this">删除当前区域</option>
+</select>
+<input type="button" value="操作" onclick="add();"/>
+<input type="button" value="复制" onclick="copy();"/>
+<input type="button" value="保存" onclick="save();"/>
+<input type="button" value="运行" onclick="run();"/>
+<div id="notebook-html"></div>
+</body>
+<script type="text/code" id="notebook-code">
+/*<in<*/
+var abc=123;
+print(abc);
+/*>in>*/
+/*<out>*/
+/**
+<p><s>描述上面这段代码实现了哪些功能，并对输出结果进行解读，您还可以随时在线修改代码和描述。</s></p>
+**/
+/*<in<*/
+var def="1234567890";
+print(def);
+/*>in>*/
+/*<out>*/
+/**
+<p><s>描述上面这段代码实现了哪些功能，并对输出结果进行解读，您还可以随时在线修改代码和描述。</s></p>
+<p><b>定义一个变量，并赋予一段字符串初值，输出变量中存储的数据。</b></p>
+**/
+</script>
+<script>
+	var html=document.querySelector("#notebook-code").innerHTML;
+	html=html.replace(/\/\*\<in\<\*\//g,"<textarea class=\"notebook-in\">");
+	html=html.replace(/\/\*\>in\>\*\//g,"</textarea>");
+	html=html.replace(/\/\*\<out\>\*\//g,"<div class=\"notebook-out\"></div>");
+	html=html.replace(/\/\*\*/g,"<div class=\"notebook-note\" contenteditable=\"true\">");
+	html=html.replace(/\*\*\//g,"</div>");
+	document.querySelector("#notebook-html").innerHTML=html;
+	var curr_notebook_box=null;
+	var all=document.querySelector("#notebook-html").childNodes;
+	for(var i=0;i<all.length;i++){
+		all[i].onclick=function(e){curr_notebook_box=this;};
+	}
+	function add(){
+		var type=document.querySelector("#notebook-type").value;
+		if(type=="notebook-type-drop-this"){
+			curr_notebook_box.parentNode.removeChild(curr_notebook_box);
+		}else if(type=="notebook-type-in-before"){
+			var box=document.createElement("textarea");
+			box.className="notebook-in";
+			addBefore(curr_notebook_box,box);
+			box.onclick=function(e){curr_notebook_box=this;};
+		}else if(type=="notebook-type-in-after"){
+			var box=document.createElement("textarea");
+			box.className="notebook-in";
+			addAfter(curr_notebook_box,box);
+			box.onclick=function(e){curr_notebook_box=this;};
+		}else if(type=="notebook-type-out-before"){
+			var box=document.createElement("div");
+			box.className="notebook-out";
+			addBefore(curr_notebook_box,box);
+			box.onclick=function(e){curr_notebook_box=this;};
+		}else if(type=="notebook-type-out-after"){
+			var box=document.createElement("div");
+			box.className="notebook-out";
+			addAfter(curr_notebook_box,box);
+			box.onclick=function(e){curr_notebook_box=this;};
+		}else if(type=="notebook-type-note-before"){
+			var box=document.createElement("div");
+			box.className="notebook-note";
+			box.setAttribute("contenteditable","true");
+			addBefore(curr_notebook_box,box);
+			box.onclick=function(e){curr_notebook_box=this;};
+		}else if(type=="notebook-type-note-after"){
+			var box=document.createElement("div");
+			box.className="notebook-note";
+			box.setAttribute("contenteditable","true");
+			addAfter(curr_notebook_box,box);
+			box.onclick=function(e){curr_notebook_box=this;};
+		}
+	}
+	function addBefore(refer,target){
+		if(refer==null){
+			var parent=document.querySelector("#notebook-html");
+			parent.insertBefore(target,parent.firstChild);
+		}else{
+			refer.parentNode.insertBefore(target,refer);
+		}
+	}
+	function addAfter(refer,target){
+		if(refer==null){
+			var parent=document.querySelector("#notebook-html");
+			parent.appendChild(target);
+		}else{
+			var parent=refer.parentNode;
+			if(parent.lastChild==refer){
+				parent.appendChild(target);
+			}else{
+		        parent.insertBefore(target,refer.nextSibling);
+			}
+		}
+	}
+	function clipboard(content){
+		var temp=document.createElement("textarea");
+		temp.value=content;
+		document.body.appendChild(temp);
+		temp.select();
+		document.execCommand("Copy");
+		temp.style.display="none";
+	}
+	function copy(){
+		var content=document.querySelector("#notebook-html").innerHTML.replace(/^[\r\n]+|[\r\n]+$/g,"").replace(/<textarea class="notebook-in">/g,"<textarea class=\"notebook-in\">\n").replace(/<\/textarea><textarea class="notebook-in">/g,"<\/textarea>\n<textarea class=\"notebook-in\">");
+		clipboard(content);
+		alert(content);
+	}
+	function save(){
+		var html="";
+		var all=document.querySelector("#notebook-html").childNodes;
+		for(var i=0;i<all.length;i++){
+			if(all[i].className=="notebook-in"){
+				if(html!=""){html+="\n";}
+				html+="/"+"*<in<*"+"/\n"+all[i].innerHTML.replace(/^[\r\n]+|[\r\n]+$/g,"")+"\n/"+"*>in>*"+"/";
+			}else if(all[i].className=="notebook-out"){
+				if(html!=""){html+="\n";}
+				html+="/"+"*<out>*"+"/";
+			}else if(all[i].className=="notebook-note"){
+				if(html!=""){html+="\n";}
+				html+="/"+"**\n"+all[i].innerHTML.replace(/^[\r\n]+|[\r\n]+$/g,"")+"\n**"+"/";
+			}
+		}
+		document.querySelector("#notebook-code").innerHTML=html;
+		alert(html);
+	}
+	function indexOf(code){
+		var inArea=code.indexOf("<textarea class=\"notebook-in\">");
+		var outArea=code.indexOf("<div class=\"notebook-out\">");
+		return inArea<outArea?inArea:outArea*-1;
+	}
+	function run(){
+		var all=document.querySelectorAll("#notebook-html .notebook-out");
+		for(var i=0;i<all.length;i++){all[i].innerHTML="";}
+		var mark=null;
+		var code="";
+		var all=document.querySelector("#notebook-html").childNodes;
+		for(var i=0;i<all.length;i++){
+			if(all[i].className=="notebook-in"){
+				if(mark==null){mark=Math.random().toString().replace(".","").split("").reverse().join("");}
+				code+="$.$_MARK_$='"+mark+"';\n"+all[i].value;
+				all[i].setAttribute("id","notebook-in-"+mark);
+			}else if(all[i].className=="notebook-out"){
+				all[i].setAttribute("id","notebook-out-"+mark);
+				mark=null;
+			}
+		}
+		if(window.WebSocket){
+			var socket=new WebSocket(location.protocol.replace("http","ws")+"//"+location.host);
+			socket.onopen=function(event){
+				console.log("WebSocket Opened"+"<br/>");
+				console.log("订阅了消息推送服务。");
+			};
+			socket.onclose=function(event){
+				console.log("WebSocket Closed"+"<br/>");
+				console.log("不再接收消息推送。");
+			};
+			socket.onerror=function(event){
+				console.error("WebSocket Error"+"<br/>");
+				console.error("无法获取消息推送服务。");
+			};
+			socket.onmessage=function(event){			
+				var json=JSON.parse(event.data);
+				if(json.step==0){
+					socket.close();
+					socket=null;
+				}else{
+					if(document.querySelector("#notebook-out-"+json.mark).innerHTML!=""){document.querySelector("#notebook-out-"+json.mark).innerHTML+="<br/>";}
+					document.querySelector("#notebook-out-"+json.mark).innerHTML+="<div class='notebook-out-"+(json.step==1?"ok":"err")+"'>"+json.data+"</div>";
+				}
+			};
+			var timer=setInterval(function(){
+				if(socket.readyState==WebSocket.OPEN){
+					send(socket,{
+						"<-<()()>->":"notebook>sjs"
+						,"code":code
+					});
+					clearInterval(timer);
+				}
+			},1);
+		}else{
+			console.error("你的浏览器不支持WebSocket");
+		}
+	}
+	function send(socket,json){
+		socket.send(JSON.stringify(json));
+	}
+</script>
+</html>

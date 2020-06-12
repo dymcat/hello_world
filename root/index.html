@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>首页</title>
+<meta charset="UTF-8"/>
+</head>
+<body>
+<li><a href="@" target="_blank">静态资源</a></li>
+<li><a href="资源库/@" target="_blank">资源库</a></li>
+<li><a href="i18n.html" target="_blank">国际化</a></li>
+<li><a href="form.html" target="_blank">表单提交</a></li>
+<li><a href="ajax.html" target="_blank">局部刷新</a></li>
+<li><a href="forward.html" target="_blank">站内转发</a></li>
+<li><a href="redirect.html" target="_blank">重定向</a></li>
+<li><a href="exit.html" target="_blank">中途结束</a></li>
+<li><a href="babel.html" target="_blank">语法转换</a></li>
+<li><a href="delay.html" target="_blank">延迟响应</a></li>
+<li><a href="erupt.html" target="_blank">并发测试</a></li>
+<li><a href="websocket.html" target="_blank">推送</a></li>
+<li><a href="webrtc.html" target="_blank">直播</a></li>
+<li><a href="audio.html" target="_blank">音频播放</a></li>
+<li><a href="video.html" target="_blank">视频播放</a></li>
+<li><a href="notebook.html" target="_blank">NoteBook</a></li>
+<li>
+	<a href="hello-html" style="text-decoration:line-through;" target="_blank">Hello HTML</a>
+	<br/>
+	&emsp;&emsp;<a href="hello-html.html" style="color:red;" target="_blank">HTML PAGE</a>
+	&emsp;&emsp;<a href="hello-html.json" style="text-decoration:line-through;" target="_blank">JSON PAGE</a>
+	&emsp;&emsp;<a href="hello-html.xml" style="text-decoration:line-through;" target="_blank">XML PAGE</a>
+	&emsp;&emsp;<a href="hello-html.txt" style="text-decoration:line-through;" target="_blank">TEXT PAGE</a>
+	<br/>
+	&emsp;&emsp;<input type="button" value="HTML AJAX" class="ajax-btn" url="hello-html.html" style="text-decoration:line-through;"/>
+	&emsp;&emsp;<input type="button" value="JSON AJAX" class="ajax-btn" url="hello-html.json" style="text-decoration:line-through;"/>
+	&emsp;&emsp;<input type="button" value="XML AJAX" class="ajax-btn" url="hello-html.xml" style="text-decoration:line-through;"/>
+	&emsp;&emsp;<input type="button" value="TEXT AJAX" class="ajax-btn" url="hello-html.txt" style="text-decoration:line-through;"/>
+</li>
+<li>
+	<a href="hello-json" style="text-decoration:line-through;" target="_blank">Hello JSON</a>
+	<br/>
+	&emsp;&emsp;<a href="hello-json.html" style="text-decoration:line-through;" target="_blank">HTML PAGE</a>
+	&emsp;&emsp;<a href="hello-json.json" style="text-decoration:line-through;" target="_blank">JSON PAGE</a>
+	&emsp;&emsp;<a href="hello-json.xml" style="text-decoration:line-through;" target="_blank">XML PAGE</a>
+	&emsp;&emsp;<a href="hello-json.txt" style="text-decoration:line-through;" target="_blank">TEXT PAGE</a>
+	<br/>
+	&emsp;&emsp;<input type="button" value="HTML AJAX" class="ajax-btn" url="hello-json.html" style="text-decoration:line-through;"/>
+	&emsp;&emsp;<input type="button" value="JSON AJAX" class="ajax-btn" url="hello-json.json" style="color:red;"/>
+	&emsp;&emsp;<input type="button" value="XML AJAX" class="ajax-btn" url="hello-json.xml" style="text-decoration:line-through;"/>
+	&emsp;&emsp;<input type="button" value="TEXT AJAX" class="ajax-btn" url="hello-json.txt" style="text-decoration:line-through;"/>
+</li>
+<img src="资源库/@/image//link.png"/>
+<img src="资源库/@/image//logo.png"/>
+</body>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script>window.jQuery||document.write("<script src='资源库/@/jquery/jquery-1.12.4.min.js'><\/script>")</script>
+<script>
+	$(".ajax-btn").click(function(){
+		var url=$(this).attr("url");
+		alert(url);
+		$.ajax({
+			url:url
+			,complete:function(XMLHttpRequest,textStatus){
+				console.log(XMLHttpRequest.responseText);
+				alert(XMLHttpRequest.responseText);
+			}
+		});
+		/*
+		$.post(url,{},function(data){
+			console.log(data);
+			alert(data);
+		});
+		*/
+	});
+</script>
+</html>
