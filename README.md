@@ -1,4 +1,4 @@
-# hello-world
+# hello_world
 
 #### 一些关于dymcat的示例程序。
 
